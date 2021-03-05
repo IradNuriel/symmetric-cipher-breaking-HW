@@ -1,0 +1,2 @@
+(plaintext, ciphertext) = (0x5E93AC02E20411CC, 0x01376B3160378E04)
+KEY = 0x00000000a5ce0d1
