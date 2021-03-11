@@ -39,10 +39,3 @@ def encrypt(word, key, rounds=20):
     return word
 
 
-
-
-a = 0xDA0BC4357C8D9F90;
-b = (2<<62) - 1;
-print("%016X"%(a))
-print("%016X"%(encrypt(a,b)))
-print("%016X"%(1<<20))
