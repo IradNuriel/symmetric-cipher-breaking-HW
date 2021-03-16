@@ -1,0 +1,5 @@
+0x0FFFF0F0FFFFFF0F --> 7th nibble reserved.
+0x00F0F0FFFF0FFFF0 --> 8th nibble reserved.
+0x0F000FFFF0FFFF0F --> 9th nibble reserved.
+0xF000FFF00FFFF0FF --> 10th nibble reserved.
+0x000FFF0FFFF00FFF --> 11th nibble reserved.

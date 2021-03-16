@@ -113,12 +113,14 @@ def create_test_vectors():
     print("%016X" % 42, "%016X" % 1, "%016X" % encrypt(42, 1))
     print("%016X" % 0, "%016X" % 0x0123456789ABCDEF,
           "%016X" % encrypt(0, 0x0123456789ABCDEF))
+    
 
 
 if __name__ == "__main__":
     import sys
     import hashlib
     import random
+
 
     if len(sys.argv) == 1:
         create_test_vectors()
