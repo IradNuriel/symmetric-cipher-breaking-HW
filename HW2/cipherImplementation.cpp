@@ -1,25 +1,29 @@
+///////////////////////////////////////////////////////////////////////////////////
+//                                                                               //
+//                                                                               //
+//                  written by Irad Nuriel irad9731@gmail.com                    //
+//                        written in March 13 2021                               //
+//                                                                               //
+//                                                                               //
+///////////////////////////////////////////////////////////////////////////////////
 #include "cipherImplementation.h"
 #include <iostream>
 #include <stdint.h>
-#include <time.h>
-
 
 using namespace std;
 
 
-word hextoword(uint64_t w){
+word hextoword(uint64_t w){  // change a state representation into a cell representation 
 	word newW;
-	int i;
-	for(i = 0; i < 16; i++){
+	for(int i = 0; i < 16; i++){
 		newW.nibbles[i] = (w>>i*4)&0xF;
 	}
 	return newW;
 }
 
-uint64_t wordtohex(word w){
+uint64_t wordtohex(word w){  // change a cell representation into a state representation
 	uint64_t newW = 0;
-	int i;
-	for(i = 0; i < 64; i+=4){
+	for(int i = 0; i < 64; i+=4){
 		newW |= ((uint64_t)(w.nibbles[i/4])<<(i));
 	}
 	return newW;	
@@ -27,7 +31,7 @@ uint64_t wordtohex(word w){
 
 
 
-word addRoundKey(word w, word key){
+word addRoundKey(word w, word key){  // xoring with the key
 	int i;
 	for(i = 0; i < 8; i++){
 		w.nibbles[i] = w.nibbles[i] ^ key.nibbles[i];
@@ -37,34 +41,31 @@ word addRoundKey(word w, word key){
 
 
 
-word keySchedule(word prevKey){
+word keySchedule(word prevKey){  // the key schedualing algorithm
 	word key;
-	int i;
 	prevKey.nibbles[0] ^= 0X3;
 	prevKey.nibbles[1] ^= 0xF;
 	prevKey.nibbles[2] ^= 0X3;
 	prevKey.nibbles[3] ^= 0XF;
-	for(i = 4; i < 20; i++){
+	for(int i = 4; i < 20; i++){
 		key.nibbles[i % 16] = prevKey.nibbles[((i + 4) % 16)];
 	}
 	return key;
 }
 
 
-word applySbox(word w){
-	int i;
+word applySbox(word w){  // function for applying the sbox on a word
 	unsigned short sbox[16] = {0xA, 0x5, 0x4, 0x2, 0x6, 0x1, 0xF, 0x3, 0xB, 0xE, 0x7, 0x0, 0x8, 0xD, 0xC, 0x9};
-	for(i = 0; i < 16; i++){
+	for(int i = 0; i < 16; i++){
 		w.nibbles[i] = sbox[(w.nibbles[i])];
 	}
 	return w;
 }
 
 
-word shiftRowsMIxColumns(word w){
+word shiftRowsMIxColumns(word w){  // function combining the shift rows and the mix columns parts of the round
 	word newW;
-	int i;
-	for(i = 0; i < 4; i++){
+	for(int i = 0; i < 4; i++){
 		newW.nibbles[i + 12] =  w.nibbles[i + 12]             ^  w.nibbles[((i + 2) % 4) + 4];
 		newW.nibbles[i + 8]  =  w.nibbles[((i + 3) % 4) + 8]  ^  w.nibbles[((i + 2) % 4) + 4];
 		newW.nibbles[i + 4]  =  w.nibbles[i + 12]             ^  w.nibbles[((i + 1) % 4)];
@@ -74,7 +75,7 @@ word shiftRowsMIxColumns(word w){
 }
 
 
-word roundFunction(word w, word key){
+word roundFunction(word w, word key){  // the round function
 	w = addRoundKey(w, key);
 	w = applySbox(w);
 	w = shiftRowsMIxColumns(w);
@@ -83,7 +84,7 @@ word roundFunction(word w, word key){
 
 
 
-word encrypt(word w, word key, int rounds){
+word encrypt(word w, word key, int rounds){  // the encryption function
 	int i;
 	for(i = 0; i < rounds; i++){
 		w = roundFunction(w, key);
@@ -93,18 +94,22 @@ word encrypt(word w, word key, int rounds){
 }
 
 
-void timeEncryption(){
-	word w = hextoword(0x70EF5AA696BBC479);
-	word mask = hextoword(0X0FFFF0F0FFFFFF0F);
-	word a = encrypt(w, mask, 20);
-	wordtohex(a);
-}
 
 
 
-// main for printing the relation between key nibble and ciphertext nibble
-/*
-void main1(){
+
+
+///////////////////////////////////////////////////////////////////////////////////
+//                                                                               //
+//                                                                               //
+//   from here, there are only functions I used for testing and finding masks    //
+//                                                                               //
+//                                                                               //
+///////////////////////////////////////////////////////////////////////////////////
+
+
+// function for printing the relation between key nibble and ciphertext nibble
+void printRelations(){
 	word w = hextoword(0);
 	word a;
 	bool flag[16];
@@ -149,8 +154,8 @@ void main1(){
 
 
 
-
-void main2(){
+// function for checking the relation between key nibbles and ciphertext nibble
+void checkRelations(){
 	word w = hextoword(0);
 	int i,j,k,s,t,r,a,d;
 	bool flag[16];
@@ -191,9 +196,3 @@ void main2(){
 	cout<<endl;
 }
 
-
-
-int main(){
-	main2();
-}
-*/

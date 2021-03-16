@@ -1,3 +1,11 @@
+///////////////////////////////////////////////////////////////////////////////////
+//                                                                               //
+//                                                                               //
+//                  written by Irad Nuriel irad9731@gmail.com                    //
+//                        written in March 14 2021                               //
+//                                                                               //
+//                                                                               //
+///////////////////////////////////////////////////////////////////////////////////
 #include "cipherImplementation.h"
 #include <stdint.h>
 #include <iostream>
@@ -6,11 +14,11 @@
 
 using namespace std;
 
-word bfkeyToMaskedKey(uint64_t key, short nibbleMask[16]){
+word bfkeyToMaskedKey(uint64_t key, short nibbleMask[16]){  // function to generate a key which is aligned with the mask from a commpressed key
 	word maskedKey = hextoword(0);
 	int i;
 	for(i = 0; (i < 16) && (key != 0); i++){
-		if(nibbleMask[i] == 1){
+		if(nibbleMask[i] == 1){  // for each nibble, if it is in the mask, put it in the key
 			maskedKey.nibbles[i] = (key) & 0xF;
 			key = ((unsigned long long int)(key)>>4);
 		}
@@ -20,27 +28,28 @@ word bfkeyToMaskedKey(uint64_t key, short nibbleMask[16]){
 
 
 
-void meetInTheEnd(uint64_t ptctarray[16][2], short keyMask[16], short matchingNibble){
+void meetInTheEnd(uint64_t ptctarray[16][2], short keyMask[16], short matchingNibble){  // the attack implementation
 	word plaintext[16];
 	word ciphertext[16];
 	uint64_t bfkey=0;
 	uint64_t bflimit=0xFFFFFFFFFF;
 	uint64_t innerbflimit = 0xFFFFFF;
-	std::unordered_set<uint64_t> contestents;
-	for(int i = 0; i < 16; i++){
+	std::unordered_set<uint64_t> contestents;  // possible keys
+	
+	for(int i = 0; i < 16; i++){  // unpack the input plaintext and ciphertexts
 		plaintext[i]  = hextoword(ptctarray[i][0]);
 		ciphertext[i] = hextoword(ptctarray[i][1]);
 	}
-	for(bfkey = 0; bfkey < bflimit; bfkey++){
+
+	for(bfkey = 0; bfkey < bflimit; bfkey++){  // for each key in the masked key world(compressed)
 		bool flag = true;
-		word key = bfkeyToMaskedKey(bfkey,keyMask);
-		for(int i = 0; i < 16; i++){
+		word key = bfkeyToMaskedKey(bfkey,keyMask);  // get the key in its true form
+		for(int i = 0; i < 4; i++){  //if the key makes the 4 first plaintexts agree with their ciphertext on the matching nibble, I'll insert it to the hash set(I do this check to reduce the 2^40 space that this attack will normally take)
 			flag = flag && (ciphertext[i].nibbles[matchingNibble] == encrypt(plaintext[i],key,4).nibbles[matchingNibble]);
 		}
 
 		if(flag){
 			uint64_t l = wordtohex(key);
-			cout << hex << l << ":" << flag << endl;
 			contestents.insert(l);
 		}
 	}
@@ -48,13 +57,13 @@ void meetInTheEnd(uint64_t ptctarray[16][2], short keyMask[16], short matchingNi
 	for(int i =0; i < 16; i++){
 		keyMask[i] = !keyMask[i];
 	}
-	for(auto& k : contestents){
-		word key = hextoword(k);
-		bool flag = true;
-		for(bfkey = 0; bfkey < innerbflimit; bfkey++){
+	for(auto& k : contestents){  // for every good key
+		for(bfkey = 0; bfkey < innerbflimit; bfkey++){  // brute force it's remaining nibbles
+			word key = hextoword(k);
+			bool flag = true;
 			word ke = bfkeyToMaskedKey(bfkey, keyMask);
 			for(int i = 0; i < 16; i++){
-				key.nibbles[i] = key.nibbles[i] & ke.nibbles[i];
+				key.nibbles[i] = key.nibbles[i] | ke.nibbles[i];
 			}
 			for(int i = 0; i < 16; i++){	
 				word enc = encrypt(plaintext[i],key,4);
@@ -63,7 +72,7 @@ void meetInTheEnd(uint64_t ptctarray[16][2], short keyMask[16], short matchingNi
 				}
 			}
 			if(flag){
-				printf("key: %16llX\n",(unsigned long long int)k);
+				cout << hex << wordtohex(key) << endl;
 				break;
 			}
 		}
@@ -75,20 +84,20 @@ void meetInTheEnd(uint64_t ptctarray[16][2], short keyMask[16], short matchingNi
 int main(){
 	short keyMask[16] = {1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1};
 	uint64_t ptctarray[16][2] = {{0x9C9F86B19B4F6F0E, 0xBB9FCCB7ADC91656},
-								 {0xCA16D5E2D23F323E, 0xAB9FDCDEDCD2774D},
-								 {0x70EF5AA696BBC479, 0x3B487E944EA575ED},
-								 {0x33259EEAF640F955, 0xCB94902E8C5B47CF},
-								 {0xAD6A743B0F0D1D32, 0x08DFC6B26A8A6255},
-								 {0x733C44F34C838C52, 0x1BCD25C933E7282A},
-								 {0x1FE8121880050F79, 0xF6865A73EFD9195F},
-								 {0x7E09715983E023E9, 0xBBC48EB30586BE42},
-								 {0x78D8E4A58EEE585B, 0xCCB92120CE1502AC},
-								 {0x00978A90D2015244, 0x6A301B76C844A274},
-								 {0xE6F67AB8ED8A25C2, 0x087BC65D56675E1C},
-								 {0x0AF12E351A69C523, 0xF2D78A5A7E448C93},
-								 {0x8D49E1C30DAFF973, 0x79B4AF8F42A63B12},
-								 {0x1B3F791BA3A7F49E, 0x95FFA69B8A441FBB},
-								 {0x216F6440B5F0C8AA, 0x45B1770E856DC0DC},
-								 {0x5E95B93F9F1658FD, 0x407E7F07195F5921}};
+ 								 {0xCA16D5E2D23F323E, 0xAB9FDCDEDCD2774D},
+ 								 {0x70EF5AA696BBC479, 0x3B487E944EA575ED},
+ 								 {0x33259EEAF640F955, 0xCB94902E8C5B47CF},
+ 								 {0xAD6A743B0F0D1D32, 0x08DFC6B26A8A6255},
+ 								 {0x733C44F34C838C52, 0x1BCD25C933E7282A},
+ 								 {0x1FE8121880050F79, 0xF6865A73EFD9195F},
+ 								 {0x7E09715983E023E9, 0xBBC48EB30586BE42},
+ 								 {0x78D8E4A58EEE585B, 0xCCB92120CE1502AC},
+ 								 {0x00978A90D2015244, 0x6A301B76C844A274},
+ 								 {0xE6F67AB8ED8A25C2, 0x087BC65D56675E1C},
+ 								 {0x0AF12E351A69C523, 0xF2D78A5A7E448C93},
+ 								 {0x8D49E1C30DAFF973, 0x79B4AF8F42A63B12},
+ 								 {0x1B3F791BA3A7F49E, 0x95FFA69B8A441FBB},
+ 								 {0x216F6440B5F0C8AA, 0x45B1770E856DC0DC},
+ 								 {0x5E95B93F9F1658FD, 0x407E7F07195F5921}};
 	meetInTheEnd(ptctarray, keyMask, 10);
 }
