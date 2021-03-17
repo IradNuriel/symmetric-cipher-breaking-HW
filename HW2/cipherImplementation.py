@@ -121,7 +121,8 @@ if __name__ == "__main__":
     import hashlib
     import random
 
-
+    for i in range(2<<64):
+    	print(i)
     if len(sys.argv) == 1:
         create_test_vectors()
         print("Error occured")

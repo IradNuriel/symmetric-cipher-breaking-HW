@@ -2,26 +2,26 @@
 //                                                                               //
 //                                                                               //
 //                  written by Irad Nuriel irad9731@gmail.com                    //
-//                        written in March 14 2021                               //
+//                        written in March 17 2021                               //
 //                                                                               //
 //                                                                               //
 ///////////////////////////////////////////////////////////////////////////////////
 #include "cipherImplementation.h"
 #include <stdint.h>
 #include <iostream>
-#include <unordered_set>
 #include <string>
 
 using namespace std;
 
 word bfkeyToMaskedKey(uint64_t key, short nibbleMask[16]){  // function to generate a key which is aligned with the mask from a commpressed key
-	word maskedKey = hextoword(0);
-	int i;
-	for(i = 0; (i < 16) && (key != 0); i++){
-		if(nibbleMask[i] == 1){  // for each nibble, if it is in the mask, put it in the key
-			maskedKey.nibbles[i] = (key) & 0xF;
-			key = ((unsigned long long int)(key)>>4);
-		}
+	word maskedKey;
+
+	for(int i = 0; i < 8; i++){
+		// for each nibble, if it is in the mask, put it in the key
+		maskedKey.nibbles[2*i] = (key) & (0xF * nibbleMask[2*i]);
+		key = ((unsigned long long int)(key)>>(4 * nibbleMask[2*i]));
+		maskedKey.nibbles[2*i+1] = (key) & (0xF * nibbleMask[2*i+1]);
+		key = ((unsigned long long int)(key)>>(4 * nibbleMask[2*i+1]));
 	}
 	return maskedKey;
 }
@@ -34,54 +34,58 @@ void meetInTheEnd(uint64_t ptctarray[16][2], short keyMask[16], short matchingNi
 	uint64_t bfkey=0;
 	uint64_t bflimit=0xFFFFFFFFFF;
 	uint64_t innerbflimit = 0xFFFFFF;
-	std::unordered_set<uint64_t> contestents;  // possible keys
-	
+	clock_t t;
 	for(int i = 0; i < 16; i++){  // unpack the input plaintext and ciphertexts
 		plaintext[i]  = hextoword(ptctarray[i][0]);
 		ciphertext[i] = hextoword(ptctarray[i][1]);
 	}
-
-	for(bfkey = 0; bfkey < bflimit; bfkey++){  // for each key in the masked key world(compressed)
+	t = clock();
+	for(bfkey = 0x1002FFEFFD; bfkey < bflimit; bfkey++){  // for each key in the masked key world(compressed)
 		bool flag = true;
 		word key = bfkeyToMaskedKey(bfkey,keyMask);  // get the key in its true form
-		for(int i = 0; i < 4; i++){  //if the key makes the 4 first plaintexts agree with their ciphertext on the matching nibble, I'll insert it to the hash set(I do this check to reduce the 2^40 space that this attack will normally take)
-			flag = flag && (ciphertext[i].nibbles[matchingNibble] == encrypt(plaintext[i],key,4).nibbles[matchingNibble]);
+		for(int i = 0; (i < 8) && flag; i++){  //if the key makes the plaintexts agree with their ciphertext on the matching nibble, it is the key mask
+			flag = flag && (ciphertext[i * 2].nibbles[matchingNibble] == encrypt(plaintext[i * 2],key,4).nibbles[matchingNibble]);
+			flag = flag && (ciphertext[i * 2 + 1].nibbles[matchingNibble] == encrypt(plaintext[i * 2 + 1],key,4).nibbles[matchingNibble]);
 		}
-
+		if((bfkey % (innerbflimit)) == 0){
+			cout << hex << wordtohex(key) << endl;
+		}
 		if(flag){
-			uint64_t l = wordtohex(key);
-			contestents.insert(l);
+			bfkey = wordtohex(key);
+			break;
 		}
 	}
-	cout << contestents.size() << endl;
-	for(int i =0; i < 16; i++){
+	for(int i = 0; i < 16; i++){
 		keyMask[i] = !keyMask[i];
 	}
-	for(auto& k : contestents){  // for every good key
-		for(bfkey = 0; bfkey < innerbflimit; bfkey++){  // brute force it's remaining nibbles
-			word key = hextoword(k);
-			bool flag = true;
-			word ke = bfkeyToMaskedKey(bfkey, keyMask);
-			for(int i = 0; i < 16; i++){
-				key.nibbles[i] = key.nibbles[i] | ke.nibbles[i];
-			}
-			for(int i = 0; i < 16; i++){	
-				word enc = encrypt(plaintext[i],key,4);
-				for(int j = 0; j < 16; j++){
-					flag = flag && (ciphertext[i].nibbles[j] == enc.nibbles[j]);
-				}
-			}
-			if(flag){
-				cout << hex << wordtohex(key) << endl;
-				break;
+	for(uint64_t bfke = 0; bfkey < innerbflimit; bfke++){  // BF the masked out bits of the key
+		word ke = bfkeyToMaskedKey(bfke,keyMask);
+		word key = hextoword(bfkey);
+		for(int i = 0; i < 16; i++){
+			key.nibbles[i] |= ke.nibbles[i];
+		}
+		bool flag = true;
+		for(int i = 0; (i < 16) && flag; i++){
+			word enc = encrypt(plaintext[i], key, 4);
+			for(int j = 0; (j < 16) && flag; j++){
+				flag = flag && (enc.nibbles[j] == ciphertext[i].nibbles[j]);
 			}
 		}
+		if(flag){
+			goto end;
+		}
 	}
+	end:
+	t = clock() - t;
+	cout << "attack took: " << dec << ((double)t)/CLOCKS_PER_SEC << "seconds" << endl;
+	return;
+	
 }
 
 
 //0xF000 FFF0 0FFF F0FF --> 10
 int main(){
+
 	short keyMask[16] = {1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1};
 	uint64_t ptctarray[16][2] = {{0x9C9F86B19B4F6F0E, 0xBB9FCCB7ADC91656},
  								 {0xCA16D5E2D23F323E, 0xAB9FDCDEDCD2774D},
