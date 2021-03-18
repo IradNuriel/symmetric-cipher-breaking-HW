@@ -16,12 +16,16 @@ using namespace std;
 word bfkeyToMaskedKey(uint64_t key, short nibbleMask[16]){  // function to generate a key which is aligned with the mask from a commpressed key
 	word maskedKey;
 
-	for(int i = 0; i < 8; i++){
+	for(int i = 0; i < 16; i+=4){
 		// for each nibble, if it is in the mask, put it in the key
-		maskedKey.nibbles[2*i] = (key) & (0xF * nibbleMask[2*i]);
-		key = ((unsigned long long int)(key)>>(4 * nibbleMask[2*i]));
-		maskedKey.nibbles[2*i+1] = (key) & (0xF * nibbleMask[2*i+1]);
-		key = ((unsigned long long int)(key)>>(4 * nibbleMask[2*i+1]));
+		maskedKey.nibbles[i    ] = (key)     &  (0xF * nibbleMask[i    ]);
+		key = ((unsigned long long int)(key) >> (  4 * nibbleMask[i    ]));
+		maskedKey.nibbles[i + 1] = (key)     &  (0xF * nibbleMask[i + 1]);
+		key = ((unsigned long long int)(key) >> (  4 * nibbleMask[i + 1]));
+		maskedKey.nibbles[i + 2] = (key)     &  (0xF * nibbleMask[i + 2]);
+		key = ((unsigned long long int)(key) >> (  4 * nibbleMask[i + 2]));
+		maskedKey.nibbles[i + 3] = (key)     &  (0xF * nibbleMask[i + 3]);
+		key = ((unsigned long long int)(key) >> (  4 * nibbleMask[i + 3]));
 	}
 	return maskedKey;
 }
@@ -40,15 +44,18 @@ void meetInTheEnd(uint64_t ptctarray[16][2], short keyMask[16], short matchingNi
 		ciphertext[i] = hextoword(ptctarray[i][1]);
 	}
 	t = clock();
-	for(bfkey = 0x1002FFEFFD; bfkey < bflimit; bfkey++){  // for each key in the masked key world(compressed)
+	for(bfkey = 0x152DFFF569; bfkey < bflimit; bfkey++){  // for each key in the masked key world(compressed)
 		bool flag = true;
 		word key = bfkeyToMaskedKey(bfkey,keyMask);  // get the key in its true form
-		for(int i = 0; (i < 8) && flag; i++){  //if the key makes the plaintexts agree with their ciphertext on the matching nibble, it is the key mask
-			flag = flag && (ciphertext[i * 2].nibbles[matchingNibble] == encrypt(plaintext[i * 2],key,4).nibbles[matchingNibble]);
-			flag = flag && (ciphertext[i * 2 + 1].nibbles[matchingNibble] == encrypt(plaintext[i * 2 + 1],key,4).nibbles[matchingNibble]);
+		for(int i = 0; (i < 16) && flag; i+=4){  //if the key makes the plaintexts agree with their ciphertext on the matching nibble, it is the key mask
+			flag = flag && (ciphertext[i    ].nibbles[matchingNibble] == encrypt(plaintext[i    ], key, 4).nibbles[matchingNibble]);
+			flag = flag && (ciphertext[i + 1].nibbles[matchingNibble] == encrypt(plaintext[i + 1], key, 4).nibbles[matchingNibble]);
+			flag = flag && (ciphertext[i + 2].nibbles[matchingNibble] == encrypt(plaintext[i + 2], key, 4).nibbles[matchingNibble]);
+			flag = flag && (ciphertext[i + 3].nibbles[matchingNibble] == encrypt(plaintext[i + 3], key, 4).nibbles[matchingNibble]);
 		}
-		if((bfkey % (innerbflimit)) == 0){
+		if((bfkey & (innerbflimit)) == 0){
 			cout << hex << wordtohex(key) << endl;
+			//cout << dec << ((double)(clock()-t))/CLOCKS_PER_SEC << "s" << endl;
 		}
 		if(flag){
 			bfkey = wordtohex(key);
@@ -85,7 +92,6 @@ void meetInTheEnd(uint64_t ptctarray[16][2], short keyMask[16], short matchingNi
 
 //0xF000 FFF0 0FFF F0FF --> 10
 int main(){
-
 	short keyMask[16] = {1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1};
 	uint64_t ptctarray[16][2] = {{0x9C9F86B19B4F6F0E, 0xBB9FCCB7ADC91656},
  								 {0xCA16D5E2D23F323E, 0xAB9FDCDEDCD2774D},
