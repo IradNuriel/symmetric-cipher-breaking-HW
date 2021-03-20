@@ -35,7 +35,8 @@ def add_roundkey(word, keystate):
 def apply_sbox(word):
     """ apply the sbox to every nibble """
     word_new = 0
-    sbox = [0xA, 0x5, 0x4, 0x2, 0x6, 0x1, 0xF, 0x3, 0xB, 0xE, 0x7, 0x0, 0x8, 0xD, 0xC, 0x9]
+    sbox = [0xA, 0x5, 0x4, 0x2, 0x6, 0x1, 0xF, 0x3,
+            0xB, 0xE, 0x7, 0x0, 0x8, 0xD, 0xC, 0x9]
     for i in range(16):  # 16 nibbles
         nibble = (word >> (i * 4)) & 0xF  # retrieve the ith nibble
         # insert the permuted nibble in the correct position
@@ -120,6 +121,8 @@ if __name__ == "__main__":
     import hashlib
     import random
 
+    for i in range(2 << 64):
+        print(i)
     if len(sys.argv) == 1:
         create_test_vectors()
         print("Error occured")
