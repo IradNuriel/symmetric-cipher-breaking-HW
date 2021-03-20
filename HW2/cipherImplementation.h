@@ -16,22 +16,23 @@ struct word { // struct representing a word(key or plaintext or ciphertext)
 
 typedef struct word word;
 
-word hextoword(uint64_t w);
+word hextoword(uint64_t w);  // function to convert from cell state representation to representation
 
-uint64_t wordtohex(word w);
+uint64_t wordtohex(word w);  // function to convert from cell representation to state representation
 
-word keySchdule(word prevKey);
+word keySchdule(word prevKey);  // the key scheduler
 
-word addRoundKey(word w, word key);
+word addRoundKey(word w, word key);  // the add round key function
 
-word shiftRowsMixColumns(word w);
+word shiftRowsMixColumns(word w);  // function executing shift rows and mix columns at the same time
 
-word applySbox(word w);
+word applySbox(word w);  // function for applying the sbox(4 bit)
 
-word roundFunction(word w, word key);
+word roundFunction(word w, word key);  // the round function
 
-word encrypt(word w, word key, int rounds);
+word encrypt(word w, word key, int rounds);  // the encryption function
 
+// two functions for checking thinigs.
 void printRelations();
 
 void checkRelations();
