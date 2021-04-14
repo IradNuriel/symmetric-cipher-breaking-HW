@@ -1,3 +1,2 @@
-bruteforce: bruteforce.c cipherImplementation.c timeProfiler.c
-	gcc -O3 -march=native bruteforce.c cipherImplementation.c -o bruteforce
-	gcc -O3 -march=native timeProfiler.c cipherImplementation.c -o timeProfiler
+bruteforce: bruteforce.cpp cipherImplementation.cpp
+	g++ -std=c++2a -O3 -march=native -pthread bruteforce.cpp cipherImplementation.cpp -o bruteforce
