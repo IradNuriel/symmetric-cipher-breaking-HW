@@ -43,7 +43,7 @@ word reconstructKey(word key1, word key2){
 
 
 
-word getRealKey(word forwardKey, word backwardKey, short forwardMask[16], short backwardMask[16]){
+word getRealKey(word forwardKey, word backwardKey, short forwardMask[16], short backwardMask[16]){  // function to merge between the forward key and the backward key
 	word key;
 	int i = 3;
 	short backwardMasktemp[16];
@@ -76,6 +76,7 @@ word getRealKey(word forwardKey, word backwardKey, short forwardMask[16], short 
 		for(i = 0; i < 16; i++){
 			key.nibbles[i] = 0;
 		}
+		cout << "FUCK!" << endl;
 	}
 	return key;
 }
@@ -106,12 +107,13 @@ uint64_t MiTM(uint64_t ptctarray[16][2], short forwardMask[16], short backwardMa
 		word backwardKey = bfkeyToMaskedKey(backwardBFkey, backwardMask);
 		uint64_t matchedNibble = 0;
 		for(int i = 0; i < 16; i++){
-			matchedNibble |= (((uint64_t)decrypt(ciphertext[i], backwardKey, 4).nibbles[matchingNibble])<<(4*i));
+			matchedNibble |= (((uint64_t)decrypt(ciphertext[i], backwardKey, 5).nibbles[matchingNibble])<<(4*i));
 		}
 		auto gkey = h.find(matchedNibble);
 		if(gkey != h.end()){
 			uint64_t key = wordtohex(getRealKey(gkey->second, backwardKey, forwardMask, backwardMask));
 			goodKeys.insert(key);
+			cout << "masked key: " << hex << setfill('0') << setw(16) << right << key << endl;
 			break;
 		}
 	}
@@ -137,7 +139,7 @@ uint64_t MiTM(uint64_t ptctarray[16][2], short forwardMask[16], short backwardMa
 			key = reconstructKey(templ, key);
 			bool flag = true;
 			for(int i = 0; (i < 16) && flag; i++){  // for each plaintext ciphertext pair do:
-				word enc = encrypt(plaintext[i], key, 7);  // get what the key making the plaintext to be
+				word enc = encrypt(plaintext[i], key, 8);  // get what the key making the plaintext to be
 				for(int j = 0; (j < 16) && flag; j++){  // for each nibble in the ciphertext(and the candidate ciphertext) do:
 					flag = flag && (enc.nibbles[j] == ciphertext[i].nibbles[j]);  // ask if the nibbles are equal
 				}
