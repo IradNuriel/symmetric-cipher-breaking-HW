@@ -1,0 +1,2196 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package auto
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\backgroundcolor #2e3436
+\fontcolor #ffffff
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 0.5cm
+\topmargin 0.5cm
+\rightmargin 0.5cm
+\bottommargin 0.5cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 3
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setcounter{MaxMatrixCols}{100}
+\end_layout
+
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\xor}{\oplus}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Specification of AES Mini
+\end_layout
+
+\begin_layout Author
+Irad Nuriel
+\end_layout
+
+\begin_layout Section
+Cipher
+\end_layout
+
+\begin_layout Standard
+The cipher takes a 64-bit key and 64-bit words and computes the ciphertext
+ in 7 rounds.
+ The words are divided into 8 bytes, called the state of the cipher.
+\end_layout
+
+\begin_layout Subsection
+Round function
+\end_layout
+
+\begin_layout Standard
+As the name suggests, the round function of AES Mini is very similar to
+ the round function of AES.
+ As in AES it consists of a sequential application of 4 layers.
+ Add Round Key(
+\begin_inset Formula $ARK$
+\end_inset
+
+), Sub Bytes(
+\begin_inset Formula $SB$
+\end_inset
+
+), Bit Permutation(
+\begin_inset Formula $BP$
+\end_inset
+
+) and Mix Columns(
+\begin_inset Formula $MC$
+\end_inset
+
+).
+ To clarify how each layer works, we apply the first round of the plaintext
+ : 
+\begin_inset Formula $0123\,4567\,89AB\,CDEF$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $01$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $23$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $45$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $67$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $89$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $AB$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $CD$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $EF$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with key: 
+\begin_inset Formula $0000\,0000\,FEDC\,BA98$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Add Round Key
+\end_layout
+
+\begin_layout Standard
+In the 
+\begin_inset Formula $ARK$
+\end_inset
+
+ layer we doing a bitwise 
+\begin_inset Formula $\xor$
+\end_inset
+
+ of the round key with the cipher state.
+ After adding the round key, the state of the cipher is:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $01$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $23$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $45$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $67$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $77$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $77$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $77$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $77$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Sub Bytes
+\end_layout
+
+\begin_layout Standard
+In the 
+\begin_inset Formula $SB$
+\end_inset
+
+ layer, we apply the AES sbox(Which is derived from the multiplicative inverse
+ over 
+\begin_inset Formula $GF(2^{8})$
+\end_inset
+
+) to every byte of the internal state.
+\end_layout
+
+\begin_layout Standard
+After applying substitution layer, the state is:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $7C$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $26$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $6E$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $85$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $F5$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $F5$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $F5$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $F5$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Bit Permutation
+\end_layout
+
+\begin_layout Standard
+In the 
+\begin_inset Formula $BP$
+\end_inset
+
+ layer, we pass each row through a bit permutation specific to that row(no
+ bit moving between rows and the permutation for each row is different).
+\end_layout
+
+\begin_layout Standard
+The first row, passes through:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\sigma_{1}=\begin{pmatrix}0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & A & B & C & D & E & F\\
+0 & 4 & 8 & C & 5 & 9 & D & 1 & A & E & 2 & 6 & F & 3 & 7 & B
+\end{pmatrix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The second row, passes through:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\sigma_{2}=\begin{pmatrix}0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & A & B & C & D & E & F\\
+5 & 9 & D & 1 & A & E & 2 & 6 & F & 3 & 7 & B & 0 & 4 & 8 & C
+\end{pmatrix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The third row, passes through:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\sigma_{3}=\begin{pmatrix}0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & A & B & C & D & E & F\\
+A & E & 2 & 6 & F & 3 & 7 & B & 0 & 4 & 8 & C & 5 & 9 & D & 1
+\end{pmatrix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The fourth row, passes through:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\sigma_{4}=\begin{pmatrix}0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & A & B & C & D & E & F\\
+F & 3 & 7 & B & 0 & 4 & 8 & C & 5 & 9 & D & 1 & A & E & 2 & 6
+\end{pmatrix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As you can see, basically all the rows passes through the permutation 
+\begin_inset Formula $\sigma_{1}$
+\end_inset
+
+, and after that we apply the normal shift rows(for nibbles).
+\end_layout
+
+\begin_layout Standard
+After the Bit Permutation layer, the state is:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $4B$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $E4$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $B3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $86$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $AF$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $AF$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $FA$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $FA$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Mix Columns
+\end_layout
+
+\begin_layout Standard
+In the 
+\begin_inset Formula $MC$
+\end_inset
+
+ layer, we mix the bytes in every column by multiplying each row with the
+ 
+\begin_inset Formula $MDS$
+\end_inset
+
+ matrix:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+MDS=\begin{pmatrix}2 & 3 & 1 & 1\\
+1 & 2 & 3 & 1\\
+1 & 1 & 2 & 3\\
+3 & 1 & 1 & 2
+\end{pmatrix}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After the Mix Columns layer, the state is:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $0D$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $17$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $26$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $E3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $A8$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $32$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $2E$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $F1$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Key schedule
+\end_layout
+
+\begin_layout Standard
+Given a master key 
+\begin_inset Formula $K$
+\end_inset
+
+, the roundkey for the 
+\begin_inset Formula $i$
+\end_inset
+
+-th round is given by:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+k_{i}=\begin{cases}
+(k_{i-1}<<<15)\xor(k_{i-1}<<<32)\xor k_{i-1}\xor0x3 & i>0\\
+K & i=0
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Test vectors
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Plaintext
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Ciphertext
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Key
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $0000000000000000$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $5C56543E02F02358$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $0000000000000000$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $0000000000000042$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $5AB9E5B2C2DC4817$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $0000000000000001$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $0123456789ABCDEF$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $F0FE14D1C8C16C75$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $00000000FEDCBA98$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Reference Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Python,basicstyle={\tiny},breaklines=true,showstringspaces=false,tabsize=4,extendedchars=true"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+#!/usr/Bin/env python3
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+sbox = [0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67,
+ 0x2B, 0xFE, 0xD7, 0xAB, 0x76, 0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0, 0xB7, 0xFD,
+ 0x93, 0x26, 0x36, 0x3F, 0xF7, 0xCC, 0x34, 0xA5, 0xE5, 0xF1, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		0x71, 0xD8, 0x31, 0x15, 0x04, 0xC7, 0x23, 0xC3, 0x18, 0x96, 0x05, 0x9A,
+ 0x07, 0x12, 0x80, 0xE2, 0xEB, 0x27, 0xB2, 0x75, 0x09, 0x83,
+\end_layout
+
+\begin_layout Plain Layout
+
+		0x2C, 0x1A, 0x1B, 0x6E, 0x5A, 0xA0, 0x52, 0x3B, 0xD6, 0xB3, 0x29, 0xE3,
+ 0x2F, 0x84, 0x53, 0xD1, 0x00, 0xED, 0x20, 0xFC, 0xB1, 0x5B, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		0x6A, 0xCB, 0xBE, 0x39, 0x4A, 0x4C, 0x58, 0xCF, 0xD0, 0xEF, 0xAA, 0xFB,
+ 0x43, 0x4D, 0x33, 0x85, 0x45, 0xF9, 0x02, 0x7F, 0x50, 0x3C,
+\end_layout
+
+\begin_layout Plain Layout
+
+		0x9F, 0xA8, 0x51, 0xA3, 0x40, 0x8F, 0x92, 0x9D, 0x38, 0xF5, 0xBC, 0xB6,
+ 0xDA, 0x21, 0x10, 0xFF, 0xF3, 0xD2, 0xCD, 0x0C, 0x13, 0xEC, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		0x5F, 0x97, 0x44, 0x17, 0xC4, 0xA7, 0x7E, 0x3D, 0x64, 0x5D, 0x19, 0x73,
+ 0x60, 0x81, 0x4F, 0xDC, 0x22, 0x2A, 0x90, 0x88, 0x46, 0xEE, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		0xB8, 0x14, 0xDE, 0x5E, 0x0B, 0xDB, 0xE0, 0x32, 0x3A, 0x0A, 0x49, 0x06,
+ 0x24, 0x5C, 0xC2, 0xD3, 0xAC, 0x62, 0x91, 0x95, 0xE4, 0x79, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		0xE7, 0xC8, 0x37, 0x6D, 0x8D, 0xD5, 0x4E, 0xA9, 0x6C, 0x56, 0xF4, 0xEA,
+ 0x65, 0x7A, 0xAE, 0x08, 0xBA, 0x78, 0x25, 0x2E, 0x1C, 0xA6, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		0xB4, 0xC6, 0xE8, 0xDD, 0x74, 0x1F, 0x4B, 0xBD, 0x8B, 0x8A, 0x70, 0x3E,
+ 0xB5, 0x66, 0x48, 0x03, 0xF6, 0x0E, 0x61, 0x35, 0x57, 0xB9, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		0x86, 0xC1, 0x1D, 0x9E, 0xE1, 0xF8, 0x98, 0x11, 0x69, 0xD9, 0x8E, 0x94,
+ 0x9B, 0x1E, 0x87, 0xE9, 0xCE, 0x55, 0x28, 0xDF, 0x8C, 0xA1, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54,
+ 0xBB, 0x16]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def rotateLeft(word, n, wordSize=64):
+\end_layout
+
+\begin_layout Plain Layout
+
+	mask = 2**wordSize - 1
+\end_layout
+
+\begin_layout Plain Layout
+
+	return ((word << n) & mask) | ((word >> (wordSize - n) & mask))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def nextRoundKey(roundKey): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	return (rotateLeft(roundKey, 15) ^ rotateLeft(roundKey, 32) ^ roundKey
+ ^ 0x3)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def getRows(word):
+\end_layout
+
+\begin_layout Plain Layout
+
+	row0 = (word >> 48) & 0xFFFF
+\end_layout
+
+\begin_layout Plain Layout
+
+	row1 = (word >> 32) & 0xFFFF
+\end_layout
+
+\begin_layout Plain Layout
+
+	row2 = (word >> 16) & 0xFFFF
+\end_layout
+
+\begin_layout Plain Layout
+
+	row3 = (word >> 0) & 0xFFFF
+\end_layout
+
+\begin_layout Plain Layout
+
+	return row0, row1, row2, row3
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def sigma(word): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	""" 		Implementing the sigma permutation on the 16 bit word.
+ 	"""
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord = 0 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x4000) >> 6 # 1 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x2000) >> 8 # 2 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x1000) >> 10# 3 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0800) << 3 # 4 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0400) << 1 # 5 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0200) >> 5 # 6 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0100) >> 7 # 7 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0080) << 6 # 8 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0040) << 4 # 9 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0020) << 2 # A 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0010) >> 4 # b 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0008) << 9 # C 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0004) << 7 # D 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0002) << 5 # E 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= (word & 0x0001) << 3 # F
+\end_layout
+
+\begin_layout Plain Layout
+
+	return newWord
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def bitPermutation(word): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	""" 		Shift rows implementation 	""" 
+\end_layout
+
+\begin_layout Plain Layout
+
+	row0, row1, row2, row3 = getRows(word)
+\end_layout
+
+\begin_layout Plain Layout
+
+	# Applying bit initial permutation 
+\end_layout
+
+\begin_layout Plain Layout
+
+	row0 = sigma(row0) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	row1 = sigma(row1) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	row2 = sigma(row2) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	row3 = sigma(row3)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    # apply the shiftrows transformation(to make sure that no active bits
+ will stay only in one column) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	row0 = row0  
+\end_layout
+
+\begin_layout Plain Layout
+
+	row1 = rotateLeft(row1, 4, 16) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	row2 = rotateLeft(row2, 8, 16) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	row3 = rotateLeft(row3, 12, 16)
+\end_layout
+
+\begin_layout Plain Layout
+
+	# reConstruCt the word 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord  = row0 << 48      # a |= b <==> a = a | b 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= row1 << 32 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= row2 << 16 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord |= row3 << 0
+\end_layout
+
+\begin_layout Plain Layout
+
+	return newWord
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def galoisMult(a, b):
+\end_layout
+
+\begin_layout Plain Layout
+
+	"""     MultipliCation in the Galois field GF(2^8).
+     """
+\end_layout
+
+\begin_layout Plain Layout
+
+	p = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+	hibitSet = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+	for i in range(8):
+\end_layout
+
+\begin_layout Plain Layout
+
+		if b & 1 == 1:
+\end_layout
+
+\begin_layout Plain Layout
+
+			p ^= a
+\end_layout
+
+\begin_layout Plain Layout
+
+		hibitSet = a & 0x80
+\end_layout
+
+\begin_layout Plain Layout
+
+		a <<= 1
+\end_layout
+
+\begin_layout Plain Layout
+
+		if hibitSet == 0x80: 
+\end_layout
+
+\begin_layout Plain Layout
+
+			a ^= 0x1B
+\end_layout
+
+\begin_layout Plain Layout
+
+		b >>= 1
+\end_layout
+
+\begin_layout Plain Layout
+
+	return p % 256
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def mixColumn(column): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	""" 		The AES mix column for a single Column 	""" 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newCol = [0, 0, 0, 0] 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newCol[0] = galoisMult(column[0],2) ^ galoisMult(column[3],1) ^ galoisMult(colu
+mn[2],1) ^ galoisMult(column[1],3) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newCol[1] = galoisMult(column[1],2) ^ galoisMult(column[0],1) ^ galoisMult(colu
+mn[3],1) ^ galoisMult(column[2],3) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newCol[2] = galoisMult(column[2],2) ^ galoisMult(column[1],1) ^ galoisMult(colu
+mn[0],1) ^ galoisMult(column[3],3) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	newCol[3] = galoisMult(column[3],2) ^ galoisMult(column[2],1) ^ galoisMult(colu
+mn[1],1) ^ galoisMult(column[0],3) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	return newCol
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def mixColumns(word): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	""" 		Implementation of the mix columns operation on "AES Mini"(which is
+ the AES mixColumns but with only two columns instead of four) 	""" 
+\end_layout
+
+\begin_layout Plain Layout
+
+	row0, row1, row2, row3 = getRows(word) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	column0 = [] 
+\end_layout
+
+\begin_layout Plain Layout
+
+	column1 = []
+\end_layout
+
+\begin_layout Plain Layout
+
+	column0.append((row0&0xFF00)>>8) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	column0.append((row1&0xFF00)>>8) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	column0.append((row2&0xFF00)>>8) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	column0.append((row3&0xFF00)>>8) 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	column1.append(row0&0x00FF) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	column1.append(row1&0x00FF) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	column1.append(row2&0x00FF) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	column1.append(row3&0x00FF) 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	column0 = mixColumn(column0)
+\end_layout
+
+\begin_layout Plain Layout
+
+	column1 = mixColumn(column1)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	newWord = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+	for i in range(4): 		
+\end_layout
+
+\begin_layout Plain Layout
+
+		newWord |= (((column0[i] << 8) | column1[i]) << ((4-i-1)*16))
+\end_layout
+
+\begin_layout Plain Layout
+
+	return newWord
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def applySbox(word, sbox): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	""" 		apply the sbox to every byte  	""" 
+\end_layout
+
+\begin_layout Plain Layout
+
+	wordNew = 0 
+\end_layout
+
+\begin_layout Plain Layout
+
+	for i in range(8): # 8 bytes 
+\end_layout
+
+\begin_layout Plain Layout
+
+		j = i * 8 
+\end_layout
+
+\begin_layout Plain Layout
+
+		byte = (word >> j) & 0xFF # retrieve the ith byte 
+\end_layout
+
+\begin_layout Plain Layout
+
+		# insert the permuted byte in the CorreCt position 
+\end_layout
+
+\begin_layout Plain Layout
+
+		wordNew |= sbox[byte] << j  
+\end_layout
+
+\begin_layout Plain Layout
+
+	return wordNew
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def roundFunction(word, roundKey): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	""" 		"AES Mini" round function 	""" 
+\end_layout
+
+\begin_layout Plain Layout
+
+	word = word ^ roundKey 
+\end_layout
+
+\begin_layout Plain Layout
+
+	word = applySbox(word, sbox) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	word = bitPermutation(word) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	word = mixColumns(word)
+\end_layout
+
+\begin_layout Plain Layout
+
+	return word
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def encrypt(word, masterKey, rounds=7): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	roundKey = masterKey 
+\end_layout
+
+\begin_layout Plain Layout
+
+	for i in range(rounds): 
+\end_layout
+
+\begin_layout Plain Layout
+
+		# apply the roundfunction to word  
+\end_layout
+
+\begin_layout Plain Layout
+
+		word = roundFunction(word, roundKey) 
+\end_layout
+
+\begin_layout Plain Layout
+
+		# go to the next round key 
+\end_layout
+
+\begin_layout Plain Layout
+
+		roundKey = nextRoundKey(roundKey) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	return word
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+def create_test_vectors(): 
+\end_layout
+
+\begin_layout Plain Layout
+
+	state = 0x0123456789ABCDEF 
+\end_layout
+
+\begin_layout Plain Layout
+
+	firstRoundkey = 0x00000000FEDCBA98 
+\end_layout
+
+\begin_layout Plain Layout
+
+	print("%016X" % state)
+\end_layout
+
+\begin_layout Plain Layout
+
+	state = state ^ firstRoundkey 
+\end_layout
+
+\begin_layout Plain Layout
+
+	print("%016X" % state)
+\end_layout
+
+\begin_layout Plain Layout
+
+	state = applySbox(state, sbox) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	print("%016X" % state)
+\end_layout
+
+\begin_layout Plain Layout
+
+	state = bitPermutation(state) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	print("%016X" % state) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	state = mixColumns(state) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	print("%016X" % state)
+\end_layout
+
+\begin_layout Plain Layout
+
+	print("%016X" % 0, "%016X" % 0, "%016X" % encrypt(0, 0)) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	print("%016X" % 0x42, "%016X" % 0x1, "%016X" % encrypt(0x42, 0x1)) 
+\end_layout
+
+\begin_layout Plain Layout
+
+	print("%016X" % 0x0123456789ABCDEF, "%016X" % 0x00000000FEDCBA98, "%016X"
+ % encrypt(0x0123456789ABCDEF, 0x00000000FEDCBA98))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+if __name__ == "__main__":
+\end_layout
+
+\begin_layout Plain Layout
+
+	import sys
+\end_layout
+
+\begin_layout Plain Layout
+
+	import hashlib
+\end_layout
+
+\begin_layout Plain Layout
+
+	import random
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	if len(sys.argv) == 1:
+\end_layout
+
+\begin_layout Plain Layout
+
+		create_test_vectors()
+\end_layout
+
+\begin_layout Plain Layout
+
+		print("Error occured")
+\end_layout
+
+\begin_layout Plain Layout
+
+		exit()
+\end_layout
+
+\begin_layout Plain Layout
+
+	key = int(sys.argv[1], 16)     # We seed the random generator with a hash
+ of the key to get the same messages for the same key
+\end_layout
+
+\begin_layout Plain Layout
+
+	random.seed(hashlib.sha256(sys.argv[1].encode()).digest())
+\end_layout
+
+\begin_layout Plain Layout
+
+	for i in range(16):
+\end_layout
+
+\begin_layout Plain Layout
+
+		word = random.getrandbits(64)
+\end_layout
+
+\begin_layout Plain Layout
+
+		cipher = encrypt(word, key, rounds=7)
+\end_layout
+
+\begin_layout Plain Layout
+
+		print("%016X %016X" % (word, cipher)) 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Why I designed the cipher that way?
+\end_layout
+
+\begin_layout Subsection
+Structure
+\end_layout
+
+\begin_layout Standard
+I decided to go with an SPN and not with a feistel network, because I think
+ that SPN sructures are more interesting, and most of the course we focused
+ on them, so it may be more clear.
+ 
+\end_layout
+
+\begin_layout Standard
+The idea to have the block devided into bytes instead of nibbles came to
+ me when I thought on a way to build a good sbox.
+\end_layout
+
+\begin_layout Subsection
+Sub bytes
+\end_layout
+
+\begin_layout Standard
+I decided to go with the AES sbox, as the AES cipher is proven to be a secure
+ cipher, and thus its sbox is also secured, and the sbox is known to have
+ a good non-linearity properties.
+\end_layout
+
+\begin_layout Subsection
+Bit permutation
+\end_layout
+
+\begin_layout Standard
+I decided to go with a bit permutation and not on the normal shift rows,
+ because in this way, I can make an active bit in the state move easily
+ between columns, and not just stay in his column most of the time.
+\end_layout
+
+\begin_layout Standard
+I decided that each row will have its own permutation, so that no active
+ column will stay all together(as we disscused in the last lesson)
+\end_layout
+
+\begin_layout Standard
+I decided that no bit will move between rows, because in this case, the
+ permutation need to be good for the mix columns, and in that way I ensure
+ that the permutation will not cancel the mix columns.
+\end_layout
+
+\begin_layout Subsection
+Mix columns
+\end_layout
+
+\begin_layout Standard
+I decided to go with the AES Mix columns matrix, as I had the cipher deviced
+ into bytes already, and because this matrix is a max distance seperator,
+ so any little bit change in the column will cause the whole column to be
+ different at the end of the mix columns operation.
+\end_layout
+
+\begin_layout Subsection
+Key shecule
+\end_layout
+
+\begin_layout Standard
+I decided to go with the 
+\begin_inset Formula $TC01$
+\end_inset
+
+ key schedule algorithm, as I couldn't really think of a different key sheduler,
+ and I think that the key shedule is not really important for that cipher.
+\end_layout
+
+\begin_layout Subsection
+Naming
+\end_layout
+
+\begin_layout Standard
+I decided to go with the name AES Mini, as I think that this name suite
+ this cipher well, because this cipher use a lot of elements from AES.
+\end_layout
+
+\begin_layout Subsection
+Optimized implementation speed
+\end_layout
+
+\begin_layout Standard
+The optimized implementation of the cupher could get to up to 
+\begin_inset Formula $5.395\cdot10^{6}\frac{Encryptions}{second}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Which is about 
+\begin_inset Formula $370\,\frac{clockCycles}{Encryption}$
+\end_inset
+
+ which I think is pretty fast
+\end_layout
+
+\end_body
+\end_document

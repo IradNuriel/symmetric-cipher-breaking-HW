@@ -1,0 +1,4 @@
+Characteristics: delta_in = 4000B080   ---6rounds encryption TC05---> delta_out = xx0xx0x0 w.p. of 2^(-6.245...)
+
+
+key recovery mask: 0000 00F0 FF00 FFFF ---4rounds decryption TC05---> 00F00609
