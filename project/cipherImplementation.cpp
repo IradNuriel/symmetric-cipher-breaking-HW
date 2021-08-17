@@ -232,8 +232,25 @@ uint64_t rdtsc(){
 }
 
 
+void experiment(){
+	uint64_t key = rand() % 0xFFFFFFFFFFFFFFFF;
+	int cnt = 0;
+	for(int i = 0; i < (1<<18); i++){
+		uint64_t w1 = rand() % 0xFFFFFFFFFFFFFFFF;
+		uint64_t w2 = w1 ^ 0x0100000000000000;
+		uint64_t c1 = encrypt(w1, key, 2);
+		uint64_t c2 = encrypt(w2, key, 2);
+		cout << hex << uppercase << setfill('0') << setw(16) << right << ((c1 ^ c2)&0xFFF0000000000000) << endl;	
+	}
+}
+
 
 int main(){
+	for(int i = 0; i< 1; i++){
+		srand (time(NULL));
+		experiment();
+	}
+	return 0;
 	profileTime();
 	return 0;
 	word state = 0x0123456789ABCDEF;

@@ -1,0 +1,39 @@
+0xFFFC0C3FFFFFF000 --3 rounds of decryption--> 0xF000000000100000   reserved diff
+0x3000000C00C03F3F --3 rounds of decryption--> 0x0F00000000010000   reserved diff
+
+(experimental, no theory behind as ddt for modular addition doesn't exist)
+0x00000000000000010 d_in --4 rounds of encryption--> 0x1000000000100000 d_out(0xF000000000100000 diff_mask) w.p. 2^(-2.367)
+0x00000000000000001 d_in --4 rounds of encryption--> 0x0100000000010000 d_out(0x0F00000000010000 diff_mask) w.p. 2^(-2.489)
+
+
+
+attack plan:
+phase_1: first differential
+1)	get 16 quads (p1,p2,c1,c2) s.t. p1^p2=0x00000000000000010
+2)	for k in 2^22 with mask 0x0003F3C000000FFF:
+2.1)	cnt = 0
+2.2)	for (p1,p2,c1,c2):
+2.2.1)		x=decrypt(c1,k,3)^decrypt(c2,k,3)
+2.2.2)		cnt+=(x&0xF000000000100000 is 0x1000000000100000)
+2.3)	if cnt>4:
+2.3.1)		output k as a possible partial key
+
+
+phase_2: second differential
+1)	get 16 quads (p1,p2,c1,c2) s.t. p1^p2=0x00000000000000001
+2)	for k in 2^34 with mask 0xCFFC0C33FF3FC000:
+2.1)	cnt = 0
+2.2)	k = k | partial_key_from_phase_1
+2.3)	for (p1,p2,c1,c2):
+2.3.1)		x=decrypt(c1,k,3)^decrypt(c2,k,3)
+2.3.2)		cnt+=(x&0x0F00000000010000 is 0x0100000000010000)
+2.4)	if cnt>4:
+2.4.1)		output k as a possible partial key
+
+
+phase_3: bruteforce the rest of the key
+1) 	get 2 pairs (p_i,c_i)
+2) 	for k in 2^8 with mask 0x3000000C00C03000
+2.1)	k = get_real_key_from_round_4_key(k | partial_key_from_phase_2)
+2.2)	if decrypt(c[0],k,7)==p[0] and decrypt(c[1],k,7)==p[1]:
+2.2.2)		output k as key.

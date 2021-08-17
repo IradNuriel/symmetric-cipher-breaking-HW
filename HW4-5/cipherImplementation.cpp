@@ -228,10 +228,31 @@ void checkRelations(){
 	cout << hex << setfill('0') << setw(8) << right << flag << endl;
 }
 
-/*
-int main(){
-	printRelations();
+
+void experiment(int a){
+	uint64_t key = rand() % 0xFFFFFFFFFFFFFFFF;
+	int cnt = 0;
+	for(int i = 0; i < (1<<12); i++){
+		uint32_t w1 = rand() % 0xFFFFFFFF;
+		uint32_t w2 = w1 ^ 0x00020002;
+		uint32_t c1 = encrypt(w1, key, a);
+		uint32_t c2 = encrypt(w2, key, a);
+		cnt += (((c1^c2)==0x00020002));
+		cout << hex << uppercase << setfill('0') << setw(8) << right << (c1^c2) << endl;
+			
+	}
 }
 
 
-*/
+
+
+
+int main(){
+	srand (time(NULL));
+	int a;
+	cin >> a;
+
+	experiment(a);
+}
+
+
